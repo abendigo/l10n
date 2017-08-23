@@ -1,0 +1,61 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/app-localize-behavior/app-localize-behavior.html">
+
+<dom-module id="app-app">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <div id="div" on-click="bar"><span id="en">en</span>|<span id="fr">fr</span></div>
+    <h2><span contenteditable on-input="input">[[localize('hello', 'name', prop1)]]!</span></h2>
+    <h2>[[localize('hello', 'name', prop1)]]!</h2>
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class AppApp extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element) {
+      static get is() { return 'app-app'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'app-app'
+          },
+
+          language: { 
+            value: 'fr'
+          },
+          resources: {
+            value: {
+              'en': { 'hello': 'My name is {name}' },
+              'fr': { 'hello': 'Je m\'apelle {name}' },
+              'div': { 'hello': 'HODOR' },
+            }
+          }
+        };
+      }
+
+      foo(e) {
+        console.log('foo', e.target.id, e.currentTarget.id)
+      }
+      bar(e) {
+        console.log('bar', e.target.id, e.currentTarget.id)
+
+        this.language = e.target.id;
+      }
+
+      input(e) {
+        console.log('input', e.target.textContent, e.srcElement)
+
+        this.resources = Object.assign({}, this.resources, {fr: {hello: e.target.textContent}})
+      }
+    }
+
+    window.customElements.define(AppApp.is, AppApp);
+  </script>
+</dom-module>
